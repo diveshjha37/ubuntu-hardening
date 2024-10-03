@@ -33,3 +33,9 @@ This script is designed to enhance the security of an Ubuntu server by applying 
    cd security-hardening-script
    chmod +x Harden-Ubuntu-Server.sh
    Wait for sometime and check the logs for detail infomation..
+
+
+
+
+
+## Solution Architect | DevOps Enthusiast | [LinkedIn](https://www.linkedin.com/in/diveshkumarjha/)
