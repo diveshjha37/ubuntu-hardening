@@ -146,5 +146,125 @@ echo "umask 027" >> /etc/profile
 log_message "Setting up logging for commands run by root..."
 echo "export PROMPT_COMMAND='history -a; history -n'" >> /root/.bashrc
 
+# Configure automatic security updates for all packages
+log_message "Configuring automatic security updates for all packages..."
+apt install -y apt-listbugs
+apt install -y debconf-utils
+cat <<EOL | debconf-set-selections
+apt-listbugs apt-listbugs/reportbug boolean false
+EOL
+
+# Disable IPv4 forwarding
+log_message "Disabling IPv4 forwarding..."
+sysctl -w net.ipv4.ip_forward=0
+echo "net.ipv4.ip_forward = 0" >> /etc/sysctl.conf
+
+# Install and configure Lynis for security auditing
+log_message "Installing and configuring Lynis for security auditing..."
+apt install lynis -y
+lynis audit system
+
+# Disable USB storage devices
+log_message "Disabling USB storage devices..."
+echo "blacklist usb-storage" >> /etc/modprobe.d/blacklist.conf
+
+# Set kernel parameters for security
+log_message "Setting kernel parameters for security..."
+cat <<EOL >> /etc/sysctl.conf
+kernel.dmesg_restrict = 1
+kernel.randomize_va_space = 2
+fs.protected_symlinks = 1
+fs.protected_regular = 1
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+EOL
+sysctl -p
+
+# Install and enable auditd for tracking access to sensitive files
+log_message "Installing and configuring auditd..."
+apt install auditd -y
+systemctl enable auditd
+systemctl start auditd
+
+# Configure auditd to log changes to system files
+log_message "Configuring auditd to log changes to system files..."
+cat <<EOL >> /etc/audit/rules.d/audit.rules
+-w /etc/shadow -p wa -k shadow_changes
+-w /etc/passwd -p wa -k passwd_changes
+-w /etc/sudoers -p wa -k sudoers_changes
+EOL
+service auditd restart
+
+# Enable AppArmor for mandatory access control
+log_message "Enabling AppArmor..."
+systemctl enable apparmor
+systemctl start apparmor
+
+# Install and configure rkhunter for rootkit detection
+log_message "Installing and configuring rkhunter for rootkit detection..."
+apt install rkhunter -y
+rkhunter --update
+rkhunter --propupd
+
+# Configure rkhunter to run daily
+log_message "Configuring rkhunter to run daily..."
+echo "#!/bin/sh" > /etc/cron.daily/rkhunter
+echo "/usr/bin/rkhunter --check" >> /etc/cron.daily/rkhunter
+chmod +x /etc/cron.daily/rkhunter
+
+# Install and enable fail2ban to protect against brute-force attacks
+log_message "Installing and configuring fail2ban..."
+apt install fail2ban -y
+systemctl enable fail2ban
+systemctl start fail2ban
+
+# Disable X11 forwarding in SSH
+log_message "Disabling X11 forwarding in SSH..."
+echo "X11Forwarding no" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
+# Set up SSH key authentication and disable password authentication
+log_message "Setting up SSH key authentication and disabling password authentication..."
+echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
+# Set a daily reboot if necessary (for updates, etc.)
+log_message "Setting a daily reboot at 3 AM..."
+echo "0 3 * * * root /sbin/shutdown -r now" >> /etc/crontab
+
+# Log all commands executed by users
+log_message "Logging all commands executed by users..."
+echo "export PROMPT_COMMAND='history -a; history -n'" >> /etc/bash.bashrc
+
+# Limit user sessions
+log_message "Limiting user sessions..."
+echo "session required pam_limits.so" >> /etc/pam.d/common-session
+
+# Ensure /tmp is mounted with noexec, nosuid, and nodev
+log_message "Ensuring /tmp is mounted with noexec, nosuid, and nodev..."
+echo "tmpfs /tmp tmpfs defaults,noexec,nosuid,nodev 0 0" >> /etc/fstab
+mount -o remount /tmp
+
+# Ensure /var is mounted with noexec, nosuid, and nodev
+log_message "Ensuring /var is mounted with noexec, nosuid, and nodev..."
+echo "tmpfs /var tmpfs defaults,noexec,nosuid,nodev 0 0" >> /etc/fstab
+mount -o remount /var
+
+# Configure SSH to use only strong MACs
+log_message "Configuring SSH to use only strong MACs..."
+echo "MACs hmac-sha2-256,hmac-sha2-512" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
+# Install ClamAV for malware scanning
+log_message "Installing ClamAV for malware scanning..."
+apt install clamav clamav-daemon -y
+systemctl enable clamav-daemon
+systemctl start clamav-daemon
+
+# Schedule ClamAV to run daily
+log_message "Scheduling ClamAV to run daily..."
+echo "0 2 * * * clamav /usr/bin/clamscan -r / --remove" >> /etc/crontab
+
 # Reboot prompt
-log_message "Security hardening completed. Please review the changes and reboot the server."
+log_message "Additional security hardening steps completed. Please review the changes and reboot the server."
+
