@@ -29,7 +29,7 @@ This script is designed to enhance the security of an Ubuntu server by applying 
    Clone this repository to your local machine or server.
 
    ```bash
-   git clone https://github.com/yourusername/security-hardening-script.git
+   git clone https://github.com/diveshjha37/ubuntu-hardening.git
    cd security-hardening-script
    chmod +x Harden-Ubuntu-Server.sh
    Wait for sometime and check the logs for detail infomation..
