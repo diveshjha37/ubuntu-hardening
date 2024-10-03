@@ -1,17 +1,35 @@
-Automatic Security Updates: Configured APT to ensure all packages receive security updates automatically.
-Disabling IPv4 Forwarding: Prevents unwanted routing of packets.
-Lynis Installation: Adds a security auditing tool for ongoing assessment.
-USB Device Control: Disables USB storage devices to prevent unauthorized access.
-Kernel Parameter Security: Adjusts kernel parameters to enhance system security.
-Audit Configuration: Ensures sensitive file changes are logged.
-Rootkit Detection with rkhunter: Adds a rootkit detection tool with scheduled checks.
-Brute-force Protection with fail2ban: Monitors and blocks malicious IPs.
-SSH Hardening: Configured to disable X11 forwarding and password authentication.
-Daily Reboot: Schedules daily reboots if needed for maintenance.
-Command Logging: Enhances command logging for user activities.
-Session Limiting: Limits user sessions to prevent excessive resource use.
-Secure Temporary Filesystems: Ensures /tmp and /var are mounted securely.
-Strong MACs in SSH: Ensures strong message authentication codes in SSH.
-ClamAV for Malware Scanning: Provides malware scanning capabilities with scheduled scans.
-Usage
-You can append these additional steps directly to your existing hardening script. Make sure to review each section and adapt configurations as necessary for your environment.
+# Ubuntu Server Security Hardening Script
+
+## Overview
+
+This script is designed to enhance the security of an Ubuntu server by applying various hardening techniques based on the CIS (Center for Internet Security) benchmarks. It automates the process of securing the server and reducing vulnerabilities by configuring system settings, installing essential security tools, and enforcing best practices.
+
+## Features
+
+- **Automatic Security Updates**: Configures the system to automatically install security updates for all packages.
+- **Disabling IPv4 Forwarding**: Prevents the server from routing packets between networks.
+- **Security Auditing with Lynis**: Installs and runs Lynis to audit the security of the system.
+- **USB Device Control**: Disables USB storage devices to prevent unauthorized data access.
+- **Kernel Parameter Security**: Sets kernel parameters to improve system security.
+- **Audit Logging**: Configures auditd to track changes to sensitive files.
+- **Rootkit Detection**: Installs rkhunter to detect potential rootkits and malware.
+- **Brute-force Protection**: Installs and configures fail2ban to protect against brute-force attacks.
+- **SSH Hardening**: Disables X11 forwarding and password authentication for SSH access.
+- **Scheduled Malware Scanning**: Installs ClamAV and schedules daily scans for malware.
+- **Command Logging**: Logs all commands executed by users for auditing purposes.
+
+## Prerequisites
+
+- **Operating System**: This script is designed for Ubuntu-based systems.
+- **Sudo Access**: Ensure that you have sudo privileges to execute the commands in the script.
+
+## Usage
+
+1. **Clone the Repository**: 
+   Clone this repository to your local machine or server.
+
+   ```bash
+   git clone https://github.com/yourusername/security-hardening-script.git
+   cd security-hardening-script
+   chmod +x Harden-Ubuntu-Server.sh
+   Wait for sometime and check the logs for detail infomation..
